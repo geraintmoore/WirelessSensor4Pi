@@ -47,7 +47,9 @@ Compile and upload the code to MCU with MSP430G2 Launchpad.
 ### Server
 
 You need to install the libs before compiling.
+
 [ ] wiringPi for CC1101 Driver.
+
 [ ] sqlite3-dev for the storage of Data.
 
 If you are using raspberry just as I did. You may install them with Apt-get. Don't forget to update apt cache.
