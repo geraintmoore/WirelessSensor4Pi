@@ -88,11 +88,11 @@ void loop()
 
   // the first 3 Bytes are not usable.
   Tx_fifo[3] = ID;                  //Seneor ID
-  Tx_fifo[4] = LightHi;            // 10bit ADC 高2位
-  Tx_fifo[5] = LightLow;           // 10bit ADC 低8位
-  Tx_fifo[6] = TempInteger;        // DS18B20 符号位 + 整数7位
-  Tx_fifo[7] = TempFloat;          // DS18B20 小数位 已经乘过了0.0625
-  //  Tx_fifo[8] = ID;             //提高package length后,可以承载更多数据
+  Tx_fifo[4] = LightHi;            // 10bit ADC High 2 bits
+  Tx_fifo[5] = LightLow;           // 10bit ADC Low 8 bits
+  Tx_fifo[6] = TempInteger;        // DS18B20 sign + integer 7bits
+  Tx_fifo[7] = TempFloat;          // DS18B20 float part, x 0.625 already
+  //  Tx_fifo[8] = ID;             // Change to a longer packet length (Pktlen), and send more data
   //  Tx_fifo[9] = ID;
   
   Pktlen = 0x0A;                   //Control the package Length.
@@ -114,9 +114,13 @@ void tempCMD(void) {     //Send a global temperature convert command
 void saveTemperature(uint8_t ROMno) {
   int32_t newtemp32;
   uint8_t i;
+  //带符号位的整数部分  最高位为1时证明为负值，需要加上-号，数值上减去128 Bin(1000 0000) HEx 0x80
+  //sign + integer part. ht highest bit is for sign, 0x1000 0000 means temperature below Zero.
   newtemp32 = data[1] << 8;
-  newtemp32 = newtemp32 + data[0] >> 4;        //带符号位的整数部分  最高位为1时证明为负值，需要加上-号，数值上减去128 Bin(1000 0000) HEx 0x80
-  TempFloat = (data[0] & 0x0F) * 625 / 1000;  //小数部分
+  newtemp32 = newtemp32 + data[0] >> 4;        
+
+// Float part, 4 bits need to plus 0.0625 in the Post data processing. 
+  TempFloat = data[0] & 0x0F;  //小数部分
   result[ROMno] = byte(newtemp32);
 
   //小数部分四舍五入处理
