@@ -58,11 +58,11 @@ then compile with g++
 Create the sqlite3 DB file, 3 columns
 > create table sensors_v1(ID integer Primary Key Autoincrement, RxBuff TEXT, Datetime TEXT);
 
-Then put both both Daemon.out and the database file to /Home/pi/.
+Then put both Daemon.out and the database file to /home/pi/.
 
 Add the start-and-run command to /etc/rc.local file, Just before "exit 0".
 
-> /Home/pi/Daemon.out
+> /home/pi/Daemon.out
 
 Reboot and leave it there.
 
@@ -73,8 +73,13 @@ Reboot and leave it there.
 
 ### PS: how to get data from sqlite3 database
 > sqlite3 your_database_file_name.db
+
 > sqlite> .headers on
+
 > sqlite> .mode csv
+
 > sqlite> .output data.csv
+
 > sqlite> SELECT FROM table;
+
 > sqlite> .quit
